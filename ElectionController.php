@@ -10,7 +10,7 @@ use OAuth;
 class ElectionController
 {
     public function getContent($canVote = -1) {
-        switch(Config::ELECTION_PHASE) {
+        switch($this->determineElectionStatus()) {
             case ElectionStatus::ELECTIONS_OFF: {
                 return $this->errorMessage('W tej chwili na OC.pl nie trwa żadne głosowanie :)');
             } break;
@@ -59,6 +59,21 @@ class ElectionController
         return null;
     }
 
+    public function determineElectionStatus() {
+        $startTime = new \DateTime(Config::ELECTION_START);
+        $votingTime = new \DateTime(Config::ELECTION_VOTING);
+        $resultsTime = new \DateTime(Config::ELECTION_RESULTS);
+        $now = new \DateTime("now");
+        if ($now >= $startTime && $now < $votingTime) {
+            return ElectionStatus::WAITING_FOR_CANDIDATES;
+        } else if($now >= $votingTime && $now < $resultsTime) {
+            return ElectionStatus::VOTING;
+        } else if($now >= $resultsTime) {
+            return ElectionStatus::FINISHED;
+        }
+        return ElectionStatus::ELECTIONS_OFF;
+    }
+
     public function addResultsToDb() {
         if(empty($_POST['votes'])) {
             $_SESSION["canVote"] = VotingStatus::EMPTY_VOTE_ERROR;
@@ -83,10 +98,7 @@ class ElectionController
     }
 
     public function getElectionTitle() {
-        if(Config::ELECTION_PHASE != ElectionStatus::ELECTIONS_OFF) {
-            return '<p class="bottom">'.Config::ELECTION_TITLE.'</p>';
-        }
-        return '';
+        return '<p class="bottom">'.Config::ELECTION_TITLE.'</p>';
     }
 
     private function errorMessage($message)

@@ -70,12 +70,14 @@ class ElectionController
                 $_SESSION["canVote"] = VotingStatus::TO_MANY_VOTE_ERROR;
             }
             else {
-                for($i=0; $i < $vote_count; $i++) {
-                    $db = DataBaseSingleton::Instance();
-                    $query = "INSERT INTO `votes`(`candidate_id`, `userid`) VALUES (:1, :2)";
-                    $db->multiVariableQuery($query, $_POST['votes'][$i], $_SESSION['voter_id']);
+                if (isset($_SESSION['voter_id'])) {
+                    for($i=0; $i < $vote_count; $i++) {
+                        $db = DataBaseSingleton::Instance();
+                        $query = "INSERT INTO `votes`(`candidate_id`, `userid`, `voter_ip`) VALUES (:1, :2, :3)";
+                        $db->multiVariableQuery($query, $_POST['votes'][$i], $_SESSION['voter_id'], $_SERVER['REMOTE_ADDR']);
+                    }
+                    $_SESSION["canVote"] = VotingStatus::SUCCESS;
                 }
-                $_SESSION["canVote"] = VotingStatus::SUCCESS;
             }
         }
     }

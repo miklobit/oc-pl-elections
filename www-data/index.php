@@ -26,9 +26,18 @@ if(isset($_POST["voted"]) && $_POST["voted"]==1) {
 
 		<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="css/main.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                $("button").click(function(){
+                    $("#spinner").show();
+                    $( this ).hide();
+                });
+            });
+        </script>
     </head>
-    <body>		
-		<section id="wrapper">
+    <body>
+        <section id="wrapper">
             <div class="main-container">
                 <div class="header-wrap">
                     <div class="header">
@@ -41,7 +50,6 @@ if(isset($_POST["voted"]) && $_POST["voted"]==1) {
                         <?php print $elections->getContent($_SESSION['canVote']); ?>
                     </div>
                 </div> <!-- .main -->
-
             </div> <!-- #main-container -->
 
             <!-- FOOTER -->

@@ -112,7 +112,8 @@ class ElectionController
 
     private function getSingUpButton() {
         return
-        '<div id="form">
+        '<p style="display: none" id="spinner"><img src="img/spinner.gif" /></p>
+        <div id="form">
             <form action="index.php" method="POST">
                 <div class="field-holder">
                     <button type="submit" class="submit">Zaloguj mnie!</button>
